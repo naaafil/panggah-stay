@@ -141,7 +141,7 @@ export default function DashboardPage() {
       <DeviceCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} />
 
       <div className="rounded border p-4">
-        <p className="mb-2">Share lokasi ke pasangan</p>
+        <p className="mb-2">Share lokasi ke dia</p>
         <button
           onClick={toggleSharing}
           className={`rounded p-2 px-4 text-white ${sharingEnabled ? 'bg-green-600' : 'bg-gray-400'}`}
