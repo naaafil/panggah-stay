@@ -62,6 +62,9 @@ export default function LoginPage() {
         >
           {loading ? 'Memproses...' : 'Masuk'}
         </button>
+<p className="text-center text-sm">
+          Belum punya akun? <a href="/signup" className="underline">Daftar</a>
+        </p>
       </form>
     </div>
   )

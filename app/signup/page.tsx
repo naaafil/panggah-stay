@@ -89,6 +89,9 @@ export default function SignupPage() {
         >
           {loading ? 'Memproses...' : 'Daftar'}
         </button>
+<p className="text-center text-sm">
+          Sudah punya akun? <a href="/login" className="underline">Masuk</a>
+        </p>
       </form>
     </div>
   )
