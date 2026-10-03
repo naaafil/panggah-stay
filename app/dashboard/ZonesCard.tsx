@@ -21,10 +21,12 @@ export default function ZonesCard({
   partnerId,
   partnerName,
   sharingEnabled,
+  notificationsEnabled,
 }: {
   partnerId: string
   partnerName: string
   sharingEnabled: boolean
+  notificationsEnabled: boolean
 }) {
   const [zones, setZones] = useState<Zone[]>([])
   const [name, setName] = useState('')
@@ -64,7 +66,13 @@ export default function ZonesCard({
       .order('created_at', { ascending: false })
       .limit(1)
 
-    setPartnerEvent(data && data.length > 0 ? data[0] : null)
+    const newest = data && data.length > 0 ? data[0] : null
+    setPartnerEvent((prev) => {
+      if (notificationsEnabled && newest && newest.id !== prev?.id && 'Notification' in window && Notification.permission === 'granted') {
+        new Notification(partnerName || 'Pasangan', { body: newest.status_text })
+      }
+      return newest
+    })
   }, [partnerId])
 
   useEffect(() => {

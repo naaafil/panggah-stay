@@ -7,6 +7,7 @@ import StatusCard from './StatusCard'
 import ZonesCard from './ZonesCard'
 import DeviceCard from './DeviceCard'
 import MapCard from './MapCard'
+import NotificationToggle from './NotificationToggle'
 import UnpairButton from './UnpairButton'
 import { useState as useConfirmState } from 'react'
 
@@ -15,6 +16,7 @@ export default function DashboardPage() {
   const [partnerId, setPartnerId] = useState('')
   const [partnerName, setPartnerName] = useState('')
   const [sharingEnabled, setSharingEnabled] = useState(false)
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false)
   const [loading, setLoading] = useState(true)
   const [locError, setLocError] = useState('')
   const watchIdRef = useRef<number | null>(null)
@@ -30,7 +32,7 @@ export default function DashboardPage() {
 
       const { data: profile } = await supabase
         .from('profiles')
-        .select('name, location_sharing_enabled, partner_id')
+        .select('name, location_sharing_enabled, partner_id, notifications_enabled')
         .eq('id', user.id)
         .single()
 
@@ -41,6 +43,7 @@ export default function DashboardPage() {
 
       setName(profile.name)
       setSharingEnabled(profile.location_sharing_enabled)
+      setNotificationsEnabled(profile.notifications_enabled)
       setPartnerId(profile.partner_id)
 
       const { data: partnerProfile } = await supabase
@@ -133,11 +136,12 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold">Halo, {name}</h1>
       <a href="/profile" className="text-sm underline">Ubah foto profil</a>
       <UnpairButton />
+      <NotificationToggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
 
       <MapCard partnerId={partnerId} partnerName={partnerName} />
 
       <StatusCard partnerId={partnerId} partnerName={partnerName} />
-      <ZonesCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} />
+      <ZonesCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} notificationsEnabled={notificationsEnabled} />
       <DeviceCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} />
 
       <div className="rounded border p-4">
