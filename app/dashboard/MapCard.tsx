@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabaseClient'
 import 'leaflet/dist/leaflet.css'
+const MapContainer = dynamic(() => import('react-leaflet').then((m) => m.MapContainer), { ssr: false }) as any
+const TileLayer = dynamic(() => import('react-leaflet').then((m) => m.TileLayer), { ssr: false }) as any
 
-const MapContainer = dynamic(() => import('react-leaflet').then((m) => m.MapContainer), { ssr: false })
-const TileLayer = dynamic(() => import('react-leaflet').then((m) => m.TileLayer), { ssr: false })
-const Marker = dynamic(() => import('react-leaflet').then((m) => m.Marker), { ssr: false })
-const Popup = dynamic(() => import('react-leaflet').then((m) => m.Popup), { ssr: false })
+const Marker = dynamic(() => import('react-leaflet').then((m) => m.Marker), { ssr: false }) as any
+const Popup = dynamic(() => import('react-leaflet').then((m) => m.Popup), { ssr: false }) as any
 
 type Point = { lat: number; lng: number }
 
