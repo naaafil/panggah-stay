@@ -3,33 +3,28 @@
 import { useEffect, useState } from 'react'
 
 const COLORS = [
-  { name: 'Indigo', value: '#4f46e5', soft: '#eef2ff' },
   { name: 'Pink', value: '#db2777', soft: '#fce7f3' },
-  { name: 'Teal', value: '#0d9488', soft: '#ccfbf1' },
-  { name: 'Orange', value: '#ea580c', soft: '#ffedd5' },
-  { name: 'Emerald', value: '#059669', soft: '#d1fae5' },
-  { name: 'Slate', value: '#334155', soft: '#f1f5f9' },
+  { name: 'Ungu', value: '#9333ea', soft: '#f3e8ff' },
+  { name: 'Peach', value: '#ea580c', soft: '#ffedd5' },
+  { name: 'Mint', value: '#0d9488', soft: '#d9f9f0' },
+  { name: 'Biru Langit', value: '#2563eb', soft: '#e0edff' },
+  { name: 'Kuning', value: '#ca8a04', soft: '#fef9c3' },
 ]
 
 export default function ThemePicker() {
   const [open, setOpen] = useState(false)
-  const [current, setCurrent] = useState('#4f46e5')
+  const [current, setCurrent] = useState('#db2777')
 
   useEffect(() => {
     const saved = localStorage.getItem('theme-accent')
-    const savedSoft = localStorage.getItem('theme-accent-soft')
-    if (saved) {
-      setCurrent(saved)
-      document.documentElement.style.setProperty('--accent', saved)
-    }
-    if (savedSoft) {
-      document.documentElement.style.setProperty('--accent-soft', savedSoft)
-    }
+    if (saved) setCurrent(saved)
   }, [])
 
   function applyColor(color: { value: string; soft: string }) {
     document.documentElement.style.setProperty('--accent', color.value)
     document.documentElement.style.setProperty('--accent-soft', color.soft)
+    document.documentElement.style.setProperty('--background', color.soft)
+    document.documentElement.style.setProperty('--card-border', color.value + '33')
     localStorage.setItem('theme-accent', color.value)
     localStorage.setItem('theme-accent-soft', color.soft)
     setCurrent(color.value)
@@ -37,18 +32,17 @@ export default function ThemePicker() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative shrink-0">
       <button
         onClick={() => setOpen(!open)}
-        className="flex h-10 w-10 items-center justify-center rounded-full border"
-        style={{ borderColor: 'var(--card-border)' }}
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow"
         aria-label="Pilih warna tema"
       >
         <div className="h-5 w-5 rounded-full" style={{ background: current }} />
       </button>
 
       {open && (
-        <div className="card absolute right-0 top-12 z-50 w-56 shadow-lg">
+        <div className="card absolute right-0 top-12 z-50 w-60 shadow-lg">
           <p className="mb-3 text-sm font-semibold">Pilih warna tema</p>
           <div className="grid grid-cols-3 gap-3">
             {COLORS.map((c) => (
@@ -58,10 +52,9 @@ export default function ThemePicker() {
                 className="flex flex-col items-center gap-1"
               >
                 <div
-                  className="h-9 w-9 rounded-full border-2"
+                  className="h-9 w-9 rounded-full"
                   style={{
                     background: c.value,
-                    borderColor: current === c.value ? c.value : 'transparent',
                     boxShadow: current === c.value ? `0 0 0 2px white, 0 0 0 4px ${c.value}` : 'none',
                   }}
                 />

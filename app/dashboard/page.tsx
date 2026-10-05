@@ -139,8 +139,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-4 p-4 pb-10">
-      <div className="flex items-center justify-between">
+    <div className="mx-auto max-w-lg space-y-4 px-4 py-5 pb-10">
+      <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-sm text-gray-500">Halo,</p>
           <h1 className="text-2xl font-bold">{name}</h1>
