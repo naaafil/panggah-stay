@@ -7,9 +7,6 @@ import StatusCard from './StatusCard'
 import ZonesCard from './ZonesCard'
 import DeviceCard from './DeviceCard'
 import MapCard from './MapCard'
-import NotificationToggle from './NotificationToggle'
-import UnpairButton from './UnpairButton'
-import ThemePicker from './ThemePicker'
 
 export default function DashboardPage() {
   const [name, setName] = useState('')
@@ -124,12 +121,6 @@ export default function DashboardPage() {
     setLocError('')
   }
 
-  async function handleLogout() {
-    stopWatching()
-    await supabase.auth.signOut()
-    router.push('/login')
-  }
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -139,41 +130,24 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-4 px-4 py-5 pb-10">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <p className="text-sm text-gray-500">Halo,</p>
-          <h1 className="text-2xl font-bold">{name}</h1>
-        </div>
-        <ThemePicker />
+    <div className="mx-auto max-w-lg space-y-3 px-4 py-5">
+      <div>
+        <p className="text-sm text-gray-500">Halo,</p>
+        <h1 className="text-2xl font-bold">{name}</h1>
       </div>
 
-      <a href="/profile" className="accent-chip inline-block">Ubah foto profil</a>
-
       <MapCard partnerId={partnerId} partnerName={partnerName} />
-
       <StatusCard partnerId={partnerId} partnerName={partnerName} />
       <ZonesCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} notificationsEnabled={notificationsEnabled} />
       <DeviceCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} />
 
       <div className="card">
         <p className="mb-3 font-semibold">Share lokasi ke dia</p>
-        <button
-          onClick={toggleSharing}
-          className={sharingEnabled ? 'btn-primary' : 'btn-outline'}
-        >
+        <button onClick={toggleSharing} className={sharingEnabled ? 'btn-primary' : 'btn-outline'}>
           {sharingEnabled ? 'ON' : 'OFF'}
         </button>
         {locError && <p className="mt-2 text-sm text-red-500">{locError}</p>}
       </div>
-
-      <NotificationToggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
-
-      <UnpairButton />
-
-      <button onClick={handleLogout} className="btn-outline w-full">
-        Logout
-      </button>
     </div>
   )
 }
