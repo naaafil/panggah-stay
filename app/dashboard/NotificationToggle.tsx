@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 
 export default function NotificationToggle({
@@ -41,12 +41,9 @@ export default function NotificationToggle({
   }
 
   return (
-    <div className="rounded border p-4">
-      <p className="mb-2">Notifikasi zona</p>
-      <button
-        onClick={handleToggle}
-        className={`rounded p-2 px-4 text-white ${enabled ? 'bg-green-600' : 'bg-gray-400'}`}
-      >
+    <div className="card">
+      <p className="mb-3 font-semibold">Notifikasi zona</p>
+      <button onClick={handleToggle} className={enabled ? 'btn-primary' : 'btn-outline'}>
         {enabled ? 'ON' : 'OFF'}
       </button>
       {error && <p className="mt-2 text-sm text-red-500">{error}</p>}

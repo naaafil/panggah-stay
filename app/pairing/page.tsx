@@ -60,15 +60,15 @@ export default function PairingPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm space-y-6">
+      <div className="card w-full max-w-sm space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Hubungkan Akun</h1>
-          <p className="mt-2 text-sm text-gray-500">Kode invite kamu:</p>
-          <p className="mt-1 text-3xl font-mono font-bold tracking-widest">{myCode}</p>
+          <p className="mt-3 text-sm text-gray-500">Kode invite kamu:</p>
+          <p className="accent-text mt-1 text-3xl font-mono font-bold tracking-widest">{myCode}</p>
           <p className="mt-1 text-xs text-gray-500">Kasih kode ini ke dia</p>
         </div>
 
-        <form onSubmit={handlePair} className="space-y-4">
+        <form onSubmit={handlePair} className="space-y-3">
           <p className="text-sm text-gray-500">Atau masukkan kode berpasangan:</p>
           <input
             type="text"
@@ -76,17 +76,13 @@ export default function PairingPage() {
             value={partnerCode}
             onChange={(e) => setPartnerCode(e.target.value)}
             required
-            className="w-full rounded border p-2 uppercase"
+            className="input-field uppercase"
           />
 
           {error && <p className="text-sm text-red-500">{error}</p>}
           {partnerName && <p className="text-sm text-green-600">Berhasil terhubung dengan {partnerName}!</p>}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded bg-black p-2 text-white disabled:opacity-50"
-          >
+          <button type="submit" disabled={loading} className="btn-primary w-full">
             {loading ? 'Menghubungkan...' : 'Hubungkan'}
           </button>
         </form>

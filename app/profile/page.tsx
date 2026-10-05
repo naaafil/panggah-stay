@@ -81,7 +81,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm space-y-4">
+      <div className="card w-full max-w-sm space-y-4">
         <h1 className="text-2xl font-bold">Foto Profil</h1>
 
         <div className="flex justify-center">
@@ -89,10 +89,14 @@ export default function ProfilePage() {
             <img
               src={avatarUrl}
               alt="Foto profil"
-              className="h-32 w-32 rounded-full border object-cover"
+              className="h-32 w-32 rounded-full object-cover"
+              style={{ border: '3px solid var(--accent)' }}
             />
           ) : (
-            <div className="flex h-32 w-32 items-center justify-center rounded-full border text-sm text-gray-500">
+            <div
+              className="flex h-32 w-32 items-center justify-center rounded-full text-sm text-gray-500"
+              style={{ border: '2px dashed var(--card-border)' }}
+            >
               Belum ada foto
             </div>
           )}
@@ -109,10 +113,7 @@ export default function ProfilePage() {
         {uploading && <p className="text-sm text-gray-500">Mengupload...</p>}
         {error && <p className="text-sm text-red-500">{error}</p>}
 
-        <button
-          onClick={() => router.push('/dashboard')}
-          className="w-full rounded bg-black p-2 text-white"
-        >
+        <button onClick={() => router.push('/dashboard')} className="btn-primary w-full">
           Kembali ke dashboard
         </button>
       </div>

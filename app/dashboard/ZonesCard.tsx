@@ -35,6 +35,7 @@ export default function ZonesCard({
   const [saving, setSaving] = useState(false)
   const [currentZoneName, setCurrentZoneName] = useState('')
   const [partnerEvent, setPartnerEvent] = useState<ZoneEvent | null>(null)
+  const [showForm, setShowForm] = useState(false)
 
   const zonesRef = useRef<Zone[]>([])
   const currentZoneRef = useRef<Zone | null>(null)
@@ -69,11 +70,11 @@ export default function ZonesCard({
     const newest = data && data.length > 0 ? data[0] : null
     setPartnerEvent((prev) => {
       if (notificationsEnabled && newest && newest.id !== prev?.id && 'Notification' in window && Notification.permission === 'granted') {
-        new Notification(partnerName || 'Pasangan', { body: newest.status_text })
+        new Notification(partnerName || 'Dia', { body: newest.status_text })
       }
       return newest
     })
-  }, [partnerId])
+  }, [partnerId, notificationsEnabled, partnerName])
 
   useEffect(() => {
     loadZones()
@@ -182,6 +183,7 @@ export default function ZonesCard({
         }
 
         setName('')
+        setShowForm(false)
         loadZones()
       },
       (err) => {
@@ -202,13 +204,13 @@ export default function ZonesCard({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded border p-4">
-        <p className="mb-2 font-semibold">Zona {partnerName || 'dia'}</p>
+    <div className="space-y-3">
+      <div className="card">
+        <p className="mb-2 text-sm text-gray-500">Zona {partnerName || 'dia'}</p>
         {partnerEvent ? (
-          <div className="text-sm">
-            <p>{partnerEvent.status_text}</p>
-            <p className="text-gray-500">
+          <div>
+            <p className="font-medium">{partnerEvent.status_text}</p>
+            <p className="mt-1 text-xs text-gray-500">
               {new Date(partnerEvent.created_at).toLocaleString('id-ID')}
             </p>
           </div>
@@ -217,8 +219,8 @@ export default function ZonesCard({
         )}
       </div>
 
-      <div className="rounded border p-4">
-        <p className="mb-2 font-semibold">Zona kamu</p>
+      <div className="card">
+        <p className="mb-1 font-semibold">Zona kamu</p>
         <p className="mb-3 text-sm text-gray-500">
           {sharingEnabled
             ? currentZoneName
@@ -227,53 +229,57 @@ export default function ZonesCard({
             : 'Nyalain share lokasi biar check-in otomatis jalan'}
         </p>
 
-        <form onSubmit={handleAddZone} className="space-y-2">
-          <input
-            type="text"
-            placeholder="Nama zona (misal: Rumah)"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            maxLength={40}
-            required
-            className="w-full rounded border p-2"
-          />
-          <label className="block text-sm text-gray-500">
-            Radius (meter)
-            <input
-              type="number"
-              min={50}
-              max={1000}
-              value={radius}
-              onChange={(e) => setRadius(Number(e.target.value))}
-              className="mt-1 w-full rounded border p-2"
-            />
-          </label>
-          {error && <p className="text-sm text-red-500">{error}</p>}
-          <button
-            type="submit"
-            disabled={saving}
-            className="rounded bg-black p-2 px-4 text-white disabled:opacity-50"
-          >
-            {saving ? 'Mengambil lokasi...' : 'Simpan lokasi sekarang sebagai zona'}
-          </button>
-        </form>
-
         {zones.length > 0 && (
-          <div className="mt-4 space-y-2">
+          <div className="mb-3 space-y-2">
             {zones.map((z) => (
               <div key={z.id} className="flex items-center justify-between gap-2 text-sm">
                 <p>
                   {z.name} <span className="text-gray-500">({z.radius_meters} m)</span>
                 </p>
-                <button
-                  onClick={() => handleDelete(z.id)}
-                  className="rounded border px-2 py-1 text-red-500"
-                >
+                <button onClick={() => handleDelete(z.id)} className="text-xs text-red-500 underline">
                   Hapus
                 </button>
               </div>
             ))}
           </div>
+        )}
+
+        {!showForm ? (
+          <button onClick={() => setShowForm(true)} className="btn-outline">
+            + Tambah zona
+          </button>
+        ) : (
+          <form onSubmit={handleAddZone} className="space-y-2">
+            <input
+              type="text"
+              placeholder="Nama zona (misal: Rumah)"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={40}
+              required
+              className="input-field"
+            />
+            <label className="block text-sm text-gray-500">
+              Radius (meter)
+              <input
+                type="number"
+                min={50}
+                max={1000}
+                value={radius}
+                onChange={(e) => setRadius(Number(e.target.value))}
+                className="input-field mt-1"
+              />
+            </label>
+            {error && <p className="text-sm text-red-500">{error}</p>}
+            <div className="flex gap-2">
+              <button type="submit" disabled={saving} className="btn-primary">
+                {saving ? 'Mengambil lokasi...' : 'Simpan di sini'}
+              </button>
+              <button type="button" onClick={() => setShowForm(false)} className="btn-outline">
+                Batal
+              </button>
+            </div>
+          </form>
         )}
       </div>
     </div>

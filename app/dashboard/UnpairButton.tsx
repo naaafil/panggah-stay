@@ -33,33 +33,23 @@ export default function UnpairButton() {
 
   if (!confirming) {
     return (
-      <button
-        onClick={() => setConfirming(true)}
-        className="text-sm text-red-500 underline"
-      >
+      <button onClick={() => setConfirming(true)} className="text-sm text-red-500 underline">
         Putuskan koneksi berpasangan
       </button>
     )
   }
 
   return (
-    <div className="rounded border border-red-300 p-4">
-      <p className="mb-2 text-sm">
+    <div className="card" style={{ borderColor: '#fca5a5' }}>
+      <p className="mb-3 text-sm">
         Yakin mau putuskan koneksi? Kamu dan dia bakal saling kehilangan akses lokasi, status, dan riwayat.
       </p>
       {error && <p className="mb-2 text-sm text-red-500">{error}</p>}
       <div className="flex gap-2">
-        <button
-          onClick={handleUnpair}
-          disabled={loading}
-          className="rounded bg-red-600 p-2 px-4 text-sm text-white disabled:opacity-50"
-        >
+        <button onClick={handleUnpair} disabled={loading} className="btn-primary bg-red-600!" style={{ background: '#dc2626' }}>
           {loading ? 'Memproses...' : 'Ya, putuskan'}
         </button>
-        <button
-          onClick={() => setConfirming(false)}
-          className="rounded border p-2 px-4 text-sm"
-        >
+        <button onClick={() => setConfirming(false)} className="btn-outline">
           Batal
         </button>
       </div>

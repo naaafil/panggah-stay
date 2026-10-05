@@ -4,13 +4,20 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { supabase } from '@/lib/supabaseClient'
 import 'leaflet/dist/leaflet.css'
+
 const MapContainer = dynamic(() => import('react-leaflet').then((m) => m.MapContainer), { ssr: false }) as any
 const TileLayer = dynamic(() => import('react-leaflet').then((m) => m.TileLayer), { ssr: false }) as any
-
 const Marker = dynamic(() => import('react-leaflet').then((m) => m.Marker), { ssr: false }) as any
 const Popup = dynamic(() => import('react-leaflet').then((m) => m.Popup), { ssr: false }) as any
 
-type Point = { lat: number; lng: number }
+type Point = { lat: number; lng: number; speed_kmh?: number | null }
+
+function moveEmoji(speed: number | null | undefined) {
+  if (speed == null || speed < 2) return null
+  if (speed < 7) return '🚶'
+  if (speed < 25) return '🛵'
+  return '🚗'
+}
 
 export default function MapCard({
   partnerId,
@@ -37,14 +44,14 @@ export default function MapCard({
 
       const { data: mine } = await supabase
         .from('locations')
-        .select('lat, lng')
+        .select('lat, lng, speed_kmh')
         .eq('user_id', user.id)
         .maybeSingle()
       if (mine) setMyLoc(mine)
 
       const { data: partner } = await supabase
         .from('locations')
-        .select('lat, lng')
+        .select('lat, lng, speed_kmh')
         .eq('user_id', partnerId)
         .maybeSingle()
       if (partner) setPartnerLoc(partner)
@@ -72,10 +79,10 @@ export default function MapCard({
         'postgres_changes',
         { event: '*', schema: 'public', table: 'locations' },
         async (payload) => {
-          const row = payload.new as { user_id: string; lat: number; lng: number }
+          const row = payload.new as { user_id: string; lat: number; lng: number; speed_kmh?: number | null }
           const { data: { user } } = await supabase.auth.getUser()
-          if (row.user_id === user?.id) setMyLoc({ lat: row.lat, lng: row.lng })
-          if (row.user_id === partnerId) setPartnerLoc({ lat: row.lat, lng: row.lng })
+          if (row.user_id === user?.id) setMyLoc({ lat: row.lat, lng: row.lng, speed_kmh: row.speed_kmh })
+          if (row.user_id === partnerId) setPartnerLoc({ lat: row.lat, lng: row.lng, speed_kmh: row.speed_kmh })
         }
       )
       .subscribe()
@@ -85,10 +92,14 @@ export default function MapCard({
     }
   }, [partnerId])
 
-  function makeIcon(avatarUrl: string, color: string, label: string) {
-    const inner = avatarUrl
-      ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />`
-      : `<div style="width:100%;height:100%;border-radius:50%;background:${color};color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px">${label}</div>`
+  function makeIcon(avatarUrl: string, color: string, label: string, speed: number | null | undefined) {
+    const emoji = moveEmoji(speed)
+
+    const inner = emoji
+      ? `<div style="width:100%;height:100%;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:22px">${emoji}</div>`
+      : avatarUrl
+        ? `<img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:50%" />`
+        : `<div style="width:100%;height:100%;border-radius:50%;background:${color};color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px">${label}</div>`
 
     return leaflet.divIcon({
       className: '',
@@ -109,7 +120,7 @@ export default function MapCard({
   }
 
   return (
-    <div className="overflow-hidden rounded border">
+    <div className="overflow-hidden rounded-2xl" style={{ border: "1px solid var(--card-border)" }}>
       <MapContainer
         center={[center.lat, center.lng]}
         zoom={16}
@@ -122,7 +133,7 @@ export default function MapCard({
         {myLoc && (
           <Marker
             position={[myLoc.lat, myLoc.lng]}
-            icon={makeIcon(myAvatar, '#2563eb', (myName[0] || 'K').toUpperCase())}
+            icon={makeIcon(myAvatar, '#2563eb', (myName[0] || 'K').toUpperCase(), myLoc.speed_kmh)}
           >
             <Popup>Kamu</Popup>
           </Marker>
@@ -130,9 +141,9 @@ export default function MapCard({
         {partnerLoc && (
           <Marker
             position={[partnerLoc.lat, partnerLoc.lng]}
-            icon={makeIcon(partnerAvatar, '#dc2626', (partnerName[0] || 'P').toUpperCase())}
+            icon={makeIcon(partnerAvatar, '#dc2626', (partnerName[0] || 'P').toUpperCase(), partnerLoc.speed_kmh)}
           >
-            <Popup>{partnerName || 'Pasangan'}</Popup>
+            <Popup>{partnerName || 'Dia'}</Popup>
           </Marker>
         )}
       </MapContainer>

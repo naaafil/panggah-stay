@@ -19,6 +19,7 @@ export default function StatusCard({
   const [partnerStatus, setPartnerStatus] = useState<Entry | null>(null)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
 
   const loadMine = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -100,13 +101,13 @@ export default function StatusCard({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="rounded border p-4">
-        <p className="mb-2 font-semibold">Status {partnerName || 'dia'}</p>
+    <div className="space-y-3">
+      <div className="card">
+        <p className="mb-2 text-sm text-gray-500">Status {partnerName || 'dia'}</p>
         {partnerStatus ? (
-          <div className="text-sm">
-            <p>{partnerStatus.status_text}</p>
-            <p className="text-gray-500">
+          <div>
+            <p className="font-medium">{partnerStatus.status_text}</p>
+            <p className="mt-1 text-xs text-gray-500">
               {new Date(partnerStatus.created_at).toLocaleString('id-ID')}
             </p>
           </div>
@@ -115,8 +116,8 @@ export default function StatusCard({
         )}
       </div>
 
-      <div className="rounded border p-4">
-        <p className="mb-2 font-semibold">Status kamu</p>
+      <div className="card">
+        <p className="mb-3 text-sm text-gray-500">Status kamu</p>
 
         <div className="mb-3 flex flex-wrap gap-2">
           {PRESETS.map((p) => (
@@ -124,7 +125,7 @@ export default function StatusCard({
               key={p}
               type="button"
               onClick={() => setText(p)}
-              className="rounded border px-2 py-1 text-sm"
+              className="accent-chip"
             >
               {p}
             </button>
@@ -138,37 +139,43 @@ export default function StatusCard({
             value={text}
             onChange={(e) => setText(e.target.value)}
             maxLength={100}
-            className="w-full rounded border p-2"
+            className="input-field"
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <button
-            type="submit"
-            disabled={saving}
-            className="rounded bg-black p-2 px-4 text-white disabled:opacity-50"
-          >
+          <button type="submit" disabled={saving} className="btn-primary">
             {saving ? 'Menyimpan...' : 'Update status'}
           </button>
         </form>
 
         {myHistory.length > 0 && (
-          <div className="mt-4 space-y-2">
-            <p className="text-sm font-semibold">Riwayat statusmu</p>
-            {myHistory.map((h) => (
-              <div key={h.id} className="flex items-center justify-between gap-2 text-sm">
-                <div>
-                  <p>{h.status_text}</p>
-                  <p className="text-gray-500">
-                    {new Date(h.created_at).toLocaleString('id-ID')}
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleDelete(h.id)}
-                  className="rounded border px-2 py-1 text-red-500"
-                >
-                  Hapus
-                </button>
+          <div className="mt-4">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="accent-text text-sm font-medium"
+            >
+              {showHistory ? 'Sembunyikan riwayat' : 'Lihat riwayat'}
+            </button>
+
+            {showHistory && (
+              <div className="mt-2 space-y-2">
+                {myHistory.map((h) => (
+                  <div key={h.id} className="flex items-center justify-between gap-2 text-sm">
+                    <div>
+                      <p>{h.status_text}</p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(h.created_at).toLocaleString('id-ID')}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleDelete(h.id)}
+                      className="text-xs text-red-500 underline"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
         )}
       </div>

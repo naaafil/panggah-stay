@@ -32,8 +32,11 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
-        <h1 className="text-2xl font-bold">Masuk</h1>
+      <form onSubmit={handleLogin} className="card w-full max-w-sm space-y-4">
+        <div>
+          <h1 className="text-2xl font-bold">Masuk</h1>
+          <p className="text-sm text-gray-500">Yuk lanjut pantau bareng</p>
+        </div>
 
         <input
           type="email"
@@ -41,7 +44,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded border p-2"
+          className="input-field"
         />
 
         <input
@@ -50,20 +53,17 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="w-full rounded border p-2"
+          className="input-field"
         />
 
         {error && <p className="text-sm text-red-500">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded bg-black p-2 text-white disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="btn-primary w-full">
           {loading ? 'Memproses...' : 'Masuk'}
         </button>
-<p className="text-center text-sm">
-          Belum punya akun? <a href="/signup" className="underline">Daftar</a>
+
+        <p className="text-center text-sm text-gray-500">
+          Belum punya akun? <a href="/signup" className="accent-text underline">Daftar</a>
         </p>
       </form>
     </div>

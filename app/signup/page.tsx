@@ -49,8 +49,11 @@ export default function SignupPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <form onSubmit={handleSignup} className="w-full max-w-sm space-y-4">
-        <h1 className="text-2xl font-bold">Daftar Akun</h1>
+      <form onSubmit={handleSignup} className="card w-full max-w-sm space-y-4">
+        <div>
+          <h1 className="text-2xl font-bold">Daftar Akun</h1>
+          <p className="text-sm text-gray-500">Mulai pantau bareng dengan aman</p>
+        </div>
 
         <input
           type="text"
@@ -58,7 +61,7 @@ export default function SignupPage() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
-          className="w-full rounded border p-2"
+          className="input-field"
         />
 
         <input
@@ -67,7 +70,7 @@ export default function SignupPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded border p-2"
+          className="input-field"
         />
 
         <input
@@ -77,20 +80,17 @@ export default function SignupPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={6}
-          className="w-full rounded border p-2"
+          className="input-field"
         />
 
         {error && <p className="text-sm text-red-500">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded bg-black p-2 text-white disabled:opacity-50"
-        >
+        <button type="submit" disabled={loading} className="btn-primary w-full">
           {loading ? 'Memproses...' : 'Daftar'}
         </button>
-<p className="text-center text-sm">
-          Sudah punya akun? <a href="/login" className="underline">Masuk</a>
+
+        <p className="text-center text-sm text-gray-500">
+          Sudah punya akun? <a href="/login" className="accent-text underline">Masuk</a>
         </p>
       </form>
     </div>

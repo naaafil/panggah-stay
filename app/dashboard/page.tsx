@@ -9,7 +9,7 @@ import DeviceCard from './DeviceCard'
 import MapCard from './MapCard'
 import NotificationToggle from './NotificationToggle'
 import UnpairButton from './UnpairButton'
-import { useState as useConfirmState } from 'react'
+import ThemePicker from './ThemePicker'
 
 export default function DashboardPage() {
   const [name, setName] = useState('')
@@ -90,6 +90,7 @@ export default function DashboardPage() {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
             is_online: true,
+            speed_kmh: position.coords.speed != null && position.coords.speed >= 0 ? position.coords.speed * 3.6 : null,
             updated_at: new Date().toISOString(),
           },
           { onConflict: 'user_id' }
@@ -129,14 +130,25 @@ export default function DashboardPage() {
     router.push('/login')
   }
 
-  if (loading) return <div className="p-4">Loading...</div>
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-sm text-gray-500">Memuat...</p>
+      </div>
+    )
+  }
 
   return (
-    <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold">Halo, {name}</h1>
-      <a href="/profile" className="text-sm underline">Ubah foto profil</a>
-      <UnpairButton />
-      <NotificationToggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
+    <div className="mx-auto max-w-lg space-y-4 p-4 pb-10">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-gray-500">Halo,</p>
+          <h1 className="text-2xl font-bold">{name}</h1>
+        </div>
+        <ThemePicker />
+      </div>
+
+      <a href="/profile" className="accent-chip inline-block">Ubah foto profil</a>
 
       <MapCard partnerId={partnerId} partnerName={partnerName} />
 
@@ -144,21 +156,22 @@ export default function DashboardPage() {
       <ZonesCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} notificationsEnabled={notificationsEnabled} />
       <DeviceCard partnerId={partnerId} partnerName={partnerName} sharingEnabled={sharingEnabled} />
 
-      <div className="rounded border p-4">
-        <p className="mb-2">Share lokasi ke dia</p>
+      <div className="card">
+        <p className="mb-3 font-semibold">Share lokasi ke dia</p>
         <button
           onClick={toggleSharing}
-          className={`rounded p-2 px-4 text-white ${sharingEnabled ? 'bg-green-600' : 'bg-gray-400'}`}
+          className={sharingEnabled ? 'btn-primary' : 'btn-outline'}
         >
           {sharingEnabled ? 'ON' : 'OFF'}
         </button>
         {locError && <p className="mt-2 text-sm text-red-500">{locError}</p>}
       </div>
 
-      <button
-        onClick={handleLogout}
-        className="rounded bg-black p-2 text-white"
-      >
+      <NotificationToggle enabled={notificationsEnabled} onChange={setNotificationsEnabled} />
+
+      <UnpairButton />
+
+      <button onClick={handleLogout} className="btn-outline w-full">
         Logout
       </button>
     </div>

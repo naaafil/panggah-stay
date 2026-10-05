@@ -102,17 +102,20 @@ export default function DeviceCard({
   const online = lastSeenMs !== null && now - lastSeenMs < ONLINE_WINDOW_MS
 
   return (
-    <div className="rounded border p-4">
-      <p className="mb-2 font-semibold">Perangkat {partnerName || 'dia'}</p>
+    <div className="card">
+      <p className="mb-2 text-sm text-gray-500">Perangkat {partnerName || 'dia'}</p>
 
       {device ? (
         <div className="space-y-1 text-sm">
-          <p>
-            <span className={online ? 'text-green-500' : 'text-gray-500'}>●</span>{' '}
+          <p className="flex items-center gap-1.5">
+            <span
+              className="inline-block h-2 w-2 rounded-full"
+              style={{ background: online ? '#22c55e' : '#9ca3af' }}
+            />
             {online ? 'Online' : 'Offline'}
           </p>
           {lastSeenMs !== null && !online && (
-            <p className="text-gray-500">
+            <p className="text-xs text-gray-500">
               Terakhir terlihat: {new Date(lastSeenMs).toLocaleString('id-ID')}
             </p>
           )}
@@ -121,12 +124,12 @@ export default function DeviceCard({
           </p>
         </div>
       ) : (
-        <p className="text-sm text-gray-500">Pasangan belum membagikan lokasi</p>
+        <p className="text-sm text-gray-500">Dia belum membagikan lokasi</p>
       )}
 
       {sharingEnabled && !batteryOk && (
         <p className="mt-2 text-xs text-gray-500">
-          Browser kamu nggak mendukung info baterai, jadi baterai HP kamu nggak kekirim.
+          Browser kamu nggak mendukung info baterai.
         </p>
       )}
     </div>
